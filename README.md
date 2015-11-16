@@ -36,7 +36,7 @@ Be sure to read the associated [Auth Code Flow Tutorial](https://apidocs.nxt.bla
     * AUTH_CLIENT_ID = Your registered application's **Application ID**.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
     * AUTH_CLIENT_SECRET = Your registered application's **Application secret**.
     * AUTH_SUBSCRIPTION_KEY = Provide your **Subscription key**.  Use either the **primary key** or **secondary key**.  See your [profile](https://developer.nxt.blackbaud-dev.com/developer).
-    * AUTH_REDIRECT_URI = One of your registered application's **Redirect URIs**. As you try out this sample locally, you will want to use something like `https://localhost:5000/auth/callback`.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
+    * AUTH_REDIRECT_URI = One of your registered application's **Redirect URIs**. As you try out this sample locally, use `https://localhost:5000/auth/callback`.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
 
 0. On your local machine:  
   0. Change to the working directory: `cd sky-api-auth-tutorial`.
