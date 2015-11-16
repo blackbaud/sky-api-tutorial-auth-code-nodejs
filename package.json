@@ -1,0 +1,34 @@
+{
+  "name": "sky-api-auth-tutorial",
+  "version": "0.0.1",
+  "description": "The code that supports the tutorial for Blackbaud SKY API auth code flow scenario.",
+  "main": "index.js",
+  "scripts": {
+    "build": "grunt build",
+    "start": "node index.js"
+  },
+  "author": "Blackbaud-TripOtt",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "connect-timeout": "^1.7.0",
+    "cors": "^2.7.1",
+    "express": "^4.13.3",
+    "express-session": "^1.11.3",
+    "request": "^2.64.0",
+    "request-promise": "^1.0.1",
+    "simple-oauth2": "^0.2.1"
+  },
+  "engines": {
+    "node": "0.12.7"
+  },
+   "repository": {
+    "type": "git",
+    "url": "https://github.com/blackbaud/sky-api-auth-tutorial"
+  },
+  "keywords": [
+    "blackbaud",
+    "nxt",
+    "skyapi"
+  ]
+}
