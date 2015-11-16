@@ -50,7 +50,7 @@ Be sure to read the associated [Auth Code Flow Tutorial](https://apidocs.nxt.bla
   sky-api-auth-tutorial $ source .env 
   sky-api-auth-tutorial $ node index.js
   
-  ==>  Now browse to [https://localhost:5000/](https://localhost:5000/)
+  ==>  Now browse to https://localhost:5000/
   </code></pre>
   
   ### TO DO
