@@ -53,6 +53,3 @@ Be sure to read the associated [Auth Code Flow Tutorial](https://apidocs.nxt.bla
   ==>  Now browse to https://localhost:5000/
   </code></pre>
   
-  ### TO DO
-  
-  Describe how to use app.  Currently its https://localhost:5000/auth/login to get token and https://localhost:5000/api/constituents/280 to pull down a constituent.
