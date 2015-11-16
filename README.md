@@ -4,9 +4,11 @@ Blackbaud SKY API Authroization Code Flow demo application.
 
 ## About
 
-The Blackbaud SKY API currently supports the [Authorization Code Flow](https://apidocs.nxt.blackbaud-dev.com/docs/authorization/), which requires us to have a back-end server component where we're able to securely store the client secret.  For this code sample, we've implemented the server component using NodeJS.  
+The Blackbaud SKY API currently supports the [Authorization Code Flow](https://apidocs.nxt.blackbaud-dev.com/docs/authorization/), which requires a back-end server component to securely store the client secret.  For this code sample, we've implemented the server component using NodeJS.  
 
-Feel free to leave feedback by filing an issue.
+We've stripped down the user interface to highlight the Authorization Code Flow.  Our [Barkbaud code samples](https://apidocs.nxt.blackbaud-dev.com/docs/code/) provide a rich user interface using [SKY UX](http://skyux.developer.blackbaud.com/).  
+
+Feel free to leave feedback by filing an [issue](https://github.com/blackbaud/sky-api-auth-tutorial/issues).
 
 Be sure to read the associated [Auth Code Flow Tutorial](https://apidocs.nxt.blackbaud-dev.com/docs/authorization/auth-code-flow/tutorial/) within our documentation. 
 
@@ -18,8 +20,8 @@ To run this application in your environment, you will need to complete the follo
 
 0. A server, such as your local machine, capable of running [NodeJS](https://nodejs.org/en/).
 0. A reliable internet connection for cloning the repo and installing this project's dependencies.
+0. If you have not already done so, be sure to complete the <strong><a href="https://apidocs.nxt.blackbaud-dev.com/docs/getting-started/">Getting started guide</a></strong>.  This will guide you through the process of signing up for a Blackbaud developer account and requesting a subscription to an API product.  Once approved, your subscription will contain a **Primary key** and a **Secondary key**.  You can use either key as the subscription key value for the `bb-api-subscription-key` request header in calls to the API. You can view your subscription keys within your [profile](https://developer.nxt.blackbaud-dev.com/developer). 
 0. [Register your application](https://developer.nxt.blackbaud-dev.com/comingsoon) in order to obtain the **Application ID** (client id) and **Application secret** (client secret).  If you plan on running this sample on your local machine, be sure to supply a **Redirect URI** of `https://localhost:5000/auth/callback`.
-0. [Signup (for free)](https://developer.nxt.blackbaud-dev.com/) for the Blackbaud SKY API developer program in order to obtain your **Subscription key**.  The subscription key represents an approved subscription to a specific Blackbaud SKY API product and is associated with your developer account. You can view your subscription keys within your [profile](https://developer.nxt.blackbaud-dev.com/developer). 
 0. We assume you know how to clone a repo and use a command line interface (CLI) such as Terminal or the Windows Command Prompt.  
 
 ### Setup
