@@ -32,11 +32,11 @@ Be sure to read the associated [Auth Code Flow Tutorial](https://apidocs.nxt.bla
 0. Prepare environment:
   0. Copy the environment file named **.env.sample** as **.env**.
   0. Update the **.env** file with the following values.
-    * AUTH_CLIENT_ID = Your registered application's **Application ID**.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
-    * AUTH_CLIENT_SECRET = Your registered application's **Application secret**.
-    * AUTH_SUBSCRIPTION_KEY = Provide your **Subscription key**.  Use either the **primary key** or **secondary key**.  See your [profile](https://developer.nxt.blackbaud-dev.com/developer).
-    * AUTH_REDIRECT_URI = One of your registered application's **Redirect URIs**. As you try out this sample locally, use `https://localhost:5000/auth/callback`.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
-  0. Review the `.gitignore` file which specifies untracked files to ignore within git.  Note how the `.env` file is ignored. This prevents your registered application's keys from being exposed to everyone else on GitHub. 
+    * `AUTH_CLIENT_ID` = Your registered application's **Application ID**.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
+    * `AUTH_CLIENT_SECRET` = Your registered application's **Application secret**.
+    * `AUTH_SUBSCRIPTION_KEY` = Provide your **Subscription key**.  Use either the **primary key** or **secondary key**.  See your [profile](https://developer.nxt.blackbaud-dev.com/developer).
+    * `AUTH_REDIRECT_URI` = One of your registered application's **Redirect URIs**. As you try out this sample locally, use `https://localhost:5000/auth/callback`.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
+  0. Review the **.gitignore** file which specifies untracked files to ignore within git.  Note how the **.env** file is ignored. This prevents your registered application's keys from being exposed to everyone else on GitHub. 
 0. On your local machine:  
   0. Within the command prompt, change to the working directory: `cd sky-api-auth-tutorial`.
   0. Run `npm install`.  **npm** is the package manager for **nodejs**.  `npm install` installs all modules that are listed within the **package.json** file and their dependencies into the local **node_modules** directory.  
