@@ -74,7 +74,7 @@ function requireSession(request, response, next) {
 
 // Displays the startup message
 function onListen() {
-  console.log('Auth Code app running for %s on port %s', process.env.NODE_ENV, process.env.PORT);
+  console.log('SKY API Auth Code Flow Tutorial app running for https://localhost:%s/', process.env.PORT);
 }
 
 httpsOptions = {
