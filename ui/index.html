@@ -81,19 +81,10 @@
   <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
   <script>
     (function () {
-
-      /**
-       * Obtains parameters from the hash of the URL
-       * @return Object
-       */
-
       var constituentSource = document.getElementById('constituent-template').innerHTML,
         constituentTemplate = Handlebars.compile(constituentSource),
         constituentPlaceholder = document.getElementById('constituent');
-
-
       var isAuthenticated = false;
-
 
       $.ajax({
         url: '/auth/authenticated'
@@ -101,7 +92,6 @@
         isAuthenticated = data.authenticated;
         if (isAuthenticated) {
           console.log('Authorized: ' + isAuthenticated);
-
 
           $.ajax({
             url: '/api/constituents/280',
@@ -114,18 +104,13 @@
               $('#loggedin').show();
             }
           });
-
         } else {
           console.log('Authorized: ' + isAuthenticated);
-
           // display login 
           $('#login').show();
           $('#loggedin').hide();
         }
-
       });
-
     })();
   </script>
-
 </html>
