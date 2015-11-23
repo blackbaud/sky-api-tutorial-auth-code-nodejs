@@ -106,14 +106,10 @@
           $.ajax({
             url: '/api/constituents/280',
             success: function (response) {
-              constituentPlaceholder.innerHTML = constituentTemplate(response);
               console.log(response);
-
-              // render authenticated info
-             /* oauthPlaceholder.innerHTML = oauthTemplate({
-                authenticated: isAuthenticated.toString()
-              });*/
-
+              //display constituent info
+              constituentPlaceholder.innerHTML = constituentTemplate(response);
+             
               $('#login').hide();
               $('#loggedin').show();
             }
@@ -122,12 +118,7 @@
         } else {
           console.log('Authorized: ' + isAuthenticated);
 
-          // render authenticated info
-          /*oauthPlaceholder.innerHTML = oauthTemplate({
-            authenticated: isAuthenticated.toString()
-          });*/
-
-          // render initial screen
+          // display login 
           $('#login').show();
           $('#loggedin').hide();
         }
