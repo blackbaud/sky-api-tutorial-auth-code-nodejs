@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * Class which lightly wraps a few of RENXT API endpoints.
+ * Class which lightly wraps a few of SKY API endpoints.
  * @constructor
  * @returns {Object}
  *  {@link getConstituent}
