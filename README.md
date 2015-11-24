@@ -1,6 +1,6 @@
 # Blackbaud SKY API Authorization Code Flow Tutorial
 
-Blackbaud SKY API Authroization Code Flow demo application.
+Blackbaud SKY API Authorization Code Flow demo application.
 
 ## About
 
