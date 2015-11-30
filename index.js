@@ -1,19 +1,19 @@
-/*jshint node: true */
+/*jslint node: true nomen: true*/
 'use strict';
 
 var auth,
-  apiNxt,
-  apiSky,
-  app,
-  bodyParser,
-  express,
-  fs,
-  http,
-  https,
-  httpsOptions,
-  session,
-  sessionConfig,
-  timeout;
+    apiNxt,
+    apiSky,
+    app,
+    bodyParser,
+    express,
+    fs,
+    http,
+    https,
+    httpsOptions,
+    session,
+    sessionConfig,
+    timeout;
 
 // Application dependencies
 auth = require('./server/auth.js')();
@@ -30,9 +30,9 @@ timeout = require('connect-timeout');
 // If deployed in our demo site, we store the sessions using Redis
 // Locally we store the sessions in memory
 sessionConfig = {
-  resave: false,
-  saveUninitialized: true,
-  secret: '+rEchas&-wub24dR'
+    resave: false,
+    saveUninitialized: true,
+    secret: '+rEchas&-wub24dR'
 };
 
 // Create our application and register its dependencies
@@ -47,38 +47,43 @@ app.get('/auth/login', auth.getLogin);
 app.get('/auth/callback', auth.getCallback);
 app.get('/auth/logout', auth.getLogout);
 
+// Validates all requests
+function requireSession(request, response, next) {
+    auth.validate(request, function (valid) {
+        if (valid) {
+            next();
+        } else {
+            response.sendStatus(401);
+        }
+    });
+}
+
+
+
 // Register our SKY API routes
 app.get('/api/constituents/:constituentId', requireSession, apiSky.getConstituent);
 
 
 // Register our front-end UI routes
-app.use('/', express.static(__dirname + '/ui'));
+//app.use('/', express.static(__dirname + '/ui'));
+app.use('/', express['static'](__dirname + '/ui'));
 
 app.get('/', requireSession, function (request, response) {
-  console.log(request.session.ticket);
-  response.json({
-    access_token: request.session.ticket
-  });
+    console.log(request.session.ticket);
+    response.json({
+        access_token: request.session.ticket
+    });
 });
 
-// Validates all requests
-function requireSession(request, response, next) {
-  auth.validate(request, function (valid) {
-    if (valid) {
-      next();
-    } else {
-      response.sendStatus(401);
-    }
-  });
-}
+
 
 // Displays the startup message
 function onListen() {
-  console.log('SKY API Auth Code Flow Tutorial app running for https://localhost:%s/', process.env.PORT);
+    console.log('SKY API Auth Code Flow Tutorial app running for https://localhost:%s/', process.env.PORT);
 }
 
 httpsOptions = {
-  key: fs.readFileSync('sslcerts/server.key', 'utf8'),
-  cert: fs.readFileSync('sslcerts/server.crt', 'utf8')
+    key: fs.readFileSync('sslcerts/server.key', 'utf8'),
+    cert: fs.readFileSync('sslcerts/server.crt', 'utf8')
 };
 https.createServer(httpsOptions, app).listen(process.env.PORT, onListen);
