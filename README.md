@@ -31,7 +31,7 @@ Be sure to read the associated [Auth Code Flow Tutorial](https://apidocs.nxt.bla
 0. Fork or clone this repository.
 0. Prepare environment:
   0. Copy the environment file named **.env.sample** as **.env**.
-  0. Update the **.env** file with the following values.
+  0. Update the **.env** file with the following values:
     * `AUTH_CLIENT_ID` = Your registered application's **Application ID**.  See [Managing your apps](https://apidocs.nxt.blackbaud-dev.com/docs/apps/).
     * `AUTH_CLIENT_SECRET` = Your registered application's **Application secret**.
     * `AUTH_SUBSCRIPTION_KEY` = Provide your **Subscription key**.  Use either the **primary key** or **secondary key**.  See your [profile](https://developer.nxt.blackbaud-dev.com/developer).
