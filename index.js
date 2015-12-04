@@ -1,4 +1,4 @@
-/*jslint node: true nomen: true*/
+/*jslint node: true, es5: true, nomen: true*/
 'use strict';
 
 var auth,
