@@ -17,7 +17,7 @@ var auth,
 
 
 // Application dependencies
-require('dotenv').load();
+
 auth = require('./server/auth.js')();
 apiNxt = require('./server/api-nxt.js')(auth);
 apiSky = require('./server/api-sky.js')(apiNxt);
