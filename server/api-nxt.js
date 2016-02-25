@@ -26,7 +26,7 @@ module.exports = function (auth) {
       json: true,
       method: method,
       body: body,
-      url: 'https://api.nxt.blackbaud-dev.com/' + endpoint,
+      url: '	https://api.sky.blackbaud.com/constitmgmt/' + endpoint,
       headers: {
         'bb-api-subscription-key': process.env.AUTH_SUBSCRIPTION_KEY,
         'Authorization': 'Bearer ' + request.session.ticket.access_token
