@@ -17,8 +17,8 @@ module.exports = function () {
     oauth2 = require('simple-oauth2')({
       clientID: process.env.AUTH_CLIENT_ID,
       clientSecret: process.env.AUTH_CLIENT_SECRET,
-      authorizationPath: '/renxt/authorization',
-      site: 'https://oauth2.apim.blackbaud-dev.com',
+      authorizationPath: '/authorization',
+      site: 'https://oauth2.sky.blackbaud.com',
       tokenPath: '/token'
     });
 
