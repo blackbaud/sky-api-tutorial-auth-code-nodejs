@@ -2,115 +2,127 @@
 <html>
 
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SKY API Auth Code Flow Tutorial</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-  <style type="text/css">
-    #login,
-    #loggedin {
-      display: none;
-    }
-
-    .text-overflow {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      width: 500px;
-    }
-  </style>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <style>.ng-hide { display: none; }</style>
 </head>
 
-<body>
-  <div class="container">
+<body ng-app="AuthCodeFlowTutorial">
+  <div class="container" ng-controller="ConstituentCtrl as constituentCtrl">
+    <div class="page-header">
+      <h1>Blackbaud SKY API Authorization Code Flow Tutorial</h1>
+    </div>
 
-    <h1>Blackbaud SKY API Authorization Code Flow Tutorial</h1>
-
-    <div id="login">
+    <!-- LOGIN -->
+    <div ng-show="constituentCtrl.isReady && !constituentCtrl.isAuthenticated" class="ng-hide">
       <a href="/auth/login" class="btn btn-primary">Log in</a>
     </div>
 
-    <div id="loggedin">
-      <div id="constituent">
-      </div>
+    <!-- CONSTITUENT DATA -->
+    <div ng-show="constituentCtrl.isAuthenticated" class="ng-hide">
+        <h3>Constituent: {{ constituentCtrl.constituent.name }}</h3>
+        <p class="lead">
+            See <a href="https://developer.sky.blackbaud.com/contract-reference#Constituent" target="_blank">Constituent</a>
+            within the Blackbaud SKY API contact reference for a full listing of properties.
+        </p>
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Id</td>
+                <td>{{ constituentCtrl.constituent.id }}</td>
+              </tr>
+              <tr>
+                <td>type</td>
+                <td>{{ constituentCtrl.constituent.type }}</td>
+              </tr>
+              <tr>
+                <td>lookup_id</td>
+                <td>{{ constituentCtrl.constituent.lookup_id }}</td>
+              </tr>
+              <tr>
+                <td>first</td>
+                <td>{{ constituentCtrl.constituent.first }}</td>
+              </tr>
+              <tr>
+                <td>last</td>
+                <td>{{ constituentCtrl.constituent.last }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <a href="/auth/logout" class="btn btn-primary">Log out</a>
     </div>
-
   </div>
-
-  <script id="constituent-template" type="text/x-handlebars-template">
-    <h2>Constituent: {{name}}</h2>
-    <p>See <a href="https://developer.nxt.blackbaud-dev.com/contract-reference#Constituent" target="_blank">Constituent</a> within the Blackbaud SKY API contact reference for a full listing of properties.</p>
-
-    <div class="table-responsive">
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Id</td>
-            <td>{{id}}</td>
-          </tr>
-          <tr>
-            <td>type</td>
-            <td>{{type}}</td>
-          </tr>
-          <tr>
-            <td>lookup_id</td>
-            <td>{{lookup_id}}</td>
-          </tr>
-          <tr>
-            <td>first</td>
-            <td>{{first}}</td>
-          </tr>
-          <tr>
-            <td>last</td>
-            <td>{{last}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <a href="/auth/logout" class="btn btn-primary">Log out</a>
-  </script>
-
-
-
-  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-  <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <script>
-    (function () {
-      var constituentSource = document.getElementById('constituent-template').innerHTML,
-        constituentTemplate = Handlebars.compile(constituentSource),
-        constituentPlaceholder = document.getElementById('constituent');
-      var isAuthenticated = false;
+    (function ($, angular) {
+        'use strict';
 
-      $.ajax({
-        url: '/auth/authenticated'
-      }).done(function (data) {
-        isAuthenticated = data.authenticated;
-        if (isAuthenticated) {
-          console.log('Authorized: ' + isAuthenticated);
-
-          $.ajax({
-            url: '/api/constituents/280',
-            success: function (response) {
-              console.log(response);
-              //display constituent info
-              constituentPlaceholder.innerHTML = constituentTemplate(response);
-             
-              $('#login').hide();
-              $('#loggedin').show();
-            }
-          });
-        } else {
-          console.log('Authorized: ' + isAuthenticated);
-          // display login 
-          $('#login').show();
-          $('#loggedin').hide();
+        /**
+         * Handles the constituent model.
+         */
+        function ConstituentCtrl(ConstituentService) {
+            var vm;
+            vm = this;
+            vm.isReady = false;
+            ConstituentService.getConstituent(280).then(function (data) {
+                if (data.id) {
+                    vm.constituent = data;
+                    vm.isAuthenticated = true;
+                } else {
+                    vm.isAuthenticated = false;
+                }
+                vm.isReady = true;
+            });
         }
-      });
-    })();
+
+        /**
+         * Handles authenticated requests to the constituent API.
+         */
+        function ConstituentService($http, $q) {
+            return {
+                getConstituent: function (id) {
+                    var deferred;
+                    deferred = $q.defer();
+                    $http.get('/auth/authenticated').then(function (res) {
+                        if (res.data.authenticated) {
+                            $http.get('/api/constituents/' + id).then(function (res) {
+                                deferred.resolve(res.data);
+                            });
+                        } else {
+                            deferred.resolve(res.data);
+                        }
+                    });
+                    return deferred.promise;
+                }
+            };
+        }
+
+        // Dependencies.
+        ConstituentCtrl.$inject = [
+            'ConstituentService'
+        ];
+        ConstituentService.$inject = [
+            '$http',
+            '$q'
+        ];
+
+        // Initialize the app.
+        angular.module('AuthCodeFlowTutorial', [])
+            .controller('ConstituentCtrl', ConstituentCtrl)
+            .service('ConstituentService', ConstituentService);
+
+    })(window.jQuery, window.angular);
   </script>
+</body>
 </html>
