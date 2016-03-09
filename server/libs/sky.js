@@ -8,38 +8,6 @@
 
 
     /**
-     * Proxy method to the RENXT api.
-     * Validates the session before initiating request.
-     * @private
-     * @name getProxy
-     * @param {Object} request
-     * @param {string} method
-     * @param {string} endpoint
-     * @param {Function} callback
-     */
-    function proxy(request, method, endpoint, body, callback) {
-        var options;
-
-        options = {
-            json: true,
-            method: method,
-            body: body,
-            url: 'https://api.sky.blackbaud.com/constitmgmt/' + endpoint,
-            headers: {
-                'bb-api-subscription-key': process.env.AUTH_SUBSCRIPTION_KEY,
-                'Authorization': 'Bearer ' + request.session.ticket.access_token
-            }
-        };
-
-        promise(options)
-            .then(callback)
-            .catch(function (err) {
-                console.log('proxy error: ', err);
-            });
-    }
-
-
-    /**
      * Wrap all GET proxy calls.
      * @private
      * @name get
@@ -50,19 +18,6 @@
     function get(request, endpoint, callback) {
         console.log('GET ' + endpoint);
         return proxy(request, 'GET', endpoint, '', callback);
-    }
-
-
-    /**
-     * Wrap all POST proxy calls.
-     * @private
-     * @name get
-     * @param {Object} request
-     * @param {String} endpoint
-     * @param {Function} callback
-     */
-    function post(request, endpoint, body, callback) {
-        return proxy(request, 'POST', endpoint, body, callback);
     }
 
 
@@ -91,6 +46,19 @@
 
 
     /**
+     * Wrap all POST proxy calls.
+     * @private
+     * @name get
+     * @param {Object} request
+     * @param {String} endpoint
+     * @param {Function} callback
+     */
+    function post(request, endpoint, body, callback) {
+        return proxy(request, 'POST', endpoint, body, callback);
+    }
+
+
+    /**
      * Posts a note to the specified constituent
      * @name postNotes
      * @param {Object} request
@@ -103,16 +71,46 @@
 
 
     /**
+     * Proxy method to the RENXT api.
+     * Validates the session before initiating request.
+     * @private
+     * @name getProxy
+     * @param {Object} request
+     * @param {string} method
+     * @param {string} endpoint
+     * @param {Function} callback
+     */
+    function proxy(request, method, endpoint, body, callback) {
+        var options;
+
+        options = {
+            json: true,
+            method: method,
+            body: body,
+            url: 'https://api.sky.blackbaud.com/constituent/' + endpoint,
+            headers: {
+                'bb-api-subscription-key': process.env.AUTH_SUBSCRIPTION_KEY,
+                'Authorization': 'Bearer ' + request.session.ticket.access_token
+            }
+        };
+
+        promise(options)
+            .then(callback)
+            .catch(function (err) {
+                console.log('Proxy Error: ', err);
+            });
+    }
+
+
+    /**
      * Class which lightly wraps a few of SKY API endpoints.
      * @constructor
      * @returns {Object}
      *  {@link getConstituent}
      */
-    module.exports = function () {
-        return {
-            getConstituent: getConstituent,
-            getConstituentSearch: getConstituentSearch,
-            postNotes: postNotes
-        };
+    module.exports = {
+        getConstituent: getConstituent,
+        getConstituentSearch: getConstituentSearch,
+        postNotes: postNotes
     };
 }());

@@ -25,8 +25,10 @@
     function checkSession(request, response, next) {
         validate(request, function (valid) {
             if (valid) {
+                console.log("Session validated.");
                 next();
             } else {
+                console.log("Session not valid.");
                 response.sendStatus(401);
             }
         });
@@ -205,13 +207,11 @@
      *  {@link getCallback}
      *  {@link getLogout}
      */
-    module.exports = function () {
-        return {
-            checkSession: checkSession,
-            getAuthenticated: getAuthenticated,
-            getLogin: getLogin,
-            getCallback: getCallback,
-            getLogout: getLogout
-        };
+    module.exports = {
+        checkSession: checkSession,
+        getAuthenticated: getAuthenticated,
+        getCallback: getCallback,
+        getLogin: getLogin,
+        getLogout: getLogout
     };
 }());

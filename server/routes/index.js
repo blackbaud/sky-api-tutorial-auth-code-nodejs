@@ -4,13 +4,10 @@
 
     var routes;
 
-    routes = {
-        api: {}
-    };
+    routes = {};
 
-    routes.auth = require('./auth')();
-    routes.api.nxt = require('./api/nxt')();
-    routes.api.sky = require('./api/sky')(routes.api.nxt);
+    routes.auth = require('./auth');
+    routes.api = require('./api');
 
     module.exports = routes;
 }());
