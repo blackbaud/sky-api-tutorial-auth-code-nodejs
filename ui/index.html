@@ -26,7 +26,7 @@
         LOGIN
         = This section is hidden if the session has NOT been authenticated.
       -->
-      <div ng-hide="isAuthenticated">
+      <div ng-if="!isAuthenticated">
         <a href="/auth/login" class="btn btn-primary">Log in</a>
       </div>
 
@@ -37,7 +37,7 @@
         = appropriate constituent data has been returned.
         = AngularJS uses a templating engine similar to HandlebarsJS to output model data.
       -->
-      <div ng-show="isAuthenticated">
+      <div ng-if="isAuthenticated">
         <h3>Constituent: {{ constituent.name }}</h3>
         <p>
           See <a href="https://developer.sky.blackbaud.com/contract-reference#Constituent" target="_blank">Constituent</a>
