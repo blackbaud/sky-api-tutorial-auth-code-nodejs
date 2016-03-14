@@ -1,5 +1,0 @@
-set AUTH_CLIENT_ID=
-set AUTH_CLIENT_SECRET=
-set AUTH_SUBSCRIPTION_KEY=
-set AUTH_REDIRECT_URI=https://localhost:5000/auth/callback
-set PORT=5000
