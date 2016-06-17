@@ -2,9 +2,9 @@
 (function () {
     'use strict';
 
-    var promise;
+    var rq;
 
-    promise = require('request-promise');
+    rq = require('request-promise');
 
 
     /**
@@ -16,7 +16,6 @@
      * @param {Function} callback
      */
     function get(request, endpoint, callback) {
-        console.log('GET ' + endpoint);
         return proxy(request, 'GET', endpoint, '', callback);
     }
 
@@ -87,18 +86,16 @@
             json: true,
             method: method,
             body: body,
-            url: 'https://api.sky.blackbaud.com/constituent/' + endpoint,
+            url: 'https://api.sky.blackbaud.com/constituent/v1/' + endpoint,
             headers: {
                 'bb-api-subscription-key': process.env.AUTH_SUBSCRIPTION_KEY,
                 'Authorization': 'Bearer ' + request.session.ticket.access_token
             }
         };
 
-        promise(options)
-            .then(callback)
-            .catch(function (err) {
-                console.log('Proxy Error: ', err);
-            });
+        rq(options).then(callback).catch(function (err) {
+            console.log('Proxy Error: ', err);
+        });
     }
 
 

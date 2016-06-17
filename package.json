@@ -17,7 +17,7 @@
     "express": "^4.13.3",
     "express-session": "^1.11.3",
     "request": "^2.64.0",
-    "request-promise": "^1.0.1",
+    "request-promise": "^3.0.0",
     "simple-oauth2": "^0.2.1"
   },
   "engines": {

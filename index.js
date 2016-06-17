@@ -6,8 +6,7 @@
         bodyParser,
         express,
         fs,
-        https,
-        httpsOptions,
+        http,
         routes,
         session,
         sessionConfig,
@@ -15,7 +14,7 @@
 
     // Require application dependencies.
     fs = require('fs');
-    https = require('https');
+    http = require('http');
     routes = require('./server/routes');
     express = require('express');
     session = require('express-session');
@@ -57,13 +56,9 @@
 
     // Display the startup message.
     function onListen() {
-        console.log('SKY API Auth Code Flow Tutorial app running for https://localhost:%s/', process.env.PORT);
+        console.log('SKY API Auth Code Flow Tutorial app running for http://localhost:%s/', process.env.PORT);
     }
 
     // Start the server.
-    httpsOptions = {
-        key: fs.readFileSync('./server/sslcerts/server.key', 'utf8'),
-        cert: fs.readFileSync('./server/sslcerts/server.crt', 'utf8')
-    };
-    https.createServer(httpsOptions, app).listen(process.env.PORT, onListen);
+    http.createServer(app).listen(process.env.PORT, onListen);
 }());
