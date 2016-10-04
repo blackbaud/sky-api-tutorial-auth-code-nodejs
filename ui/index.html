@@ -4,26 +4,25 @@
   <title>SKY API Auth Code Flow Tutorial</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <style>
-    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-      display: none !important;
-    }
+      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+      }
 
-    .login-options {
-        border: 1px solid #FFF;
-        padding: 20px 15px;
-        text-align: center;
-        background-color: #e2e0db;
-        border-radius: 5px;
-    }
+      .login-options {
+          border: 1px solid #FFF;
+          padding: 20px 15px;
+          text-align: center;
+          background-color: #e2e0db;
+          border-radius: 5px;
+      }
 
-    .login-options-label {
-        display: block;
-        font-size: 20px;
-        margin-bottom: 15px;
-    }
+      .login-options-label {
+          display: block;
+          font-size: 20px;
+          margin-bottom: 15px;
+      }
   </style>
 </head>
-
 
 <!--
   INITIALIZE THE APP
@@ -35,15 +34,17 @@
     <h1>Blackbaud SKY API Authorization Code Flow Tutorial</h1>
     <div class="content" ng-show="isReady">
 
-
       <!--
         LOGIN
         = This section is hidden if the session has NOT been authenticated.
       -->
       <div ng-if="!isAuthenticated" class="col-sm-12">
         <p>When dealing with Oauth we have two different routes we can go to handle authentication.   One is to redirect the current browser to the authentication site, and upon success we redirect back.   The second option is to open a secondary window from the first, and handle our authentication, close the window upon success and refresh the current page.</p>
+
         <!--
             LOGIN with redirect
+                this option redirects the entire page to the bbauth site.   The user can then authorize the content,
+                and on success will be redirected back to the main page.
         -->
         <div class="col-sm-5 login-options">
           <span class="login-options-label">Login using redirect</span>
@@ -52,6 +53,8 @@
 
         <!--
             LOGIN with popup
+                this option pops open a new window to the bbauth site.   The user can then authorize the content,
+                and on success, the new window will close, and the parent window will redirect to the main page.
         -->
         <div class="col-sm-5 col-sm-offset-2 login-options">
             <span class="login-options-label">Login using popup</span>
@@ -59,7 +62,6 @@
         </div>
 
       </div>
-
 
       <!--
         CONSTITUENT DATA
@@ -111,10 +113,8 @@
       </div>
     </div>
 
-
     <div class="lead" ng-hide="isReady">Loading...</div>
   </div>
-
 
   <!--
     SCRIPTS
@@ -128,15 +128,19 @@
           angular.module('AuthCodeFlowTutorial', [])
               .controller('ConstituentCtrl', function ($scope, $http, $window) {
 
-                  // Keeps an eye out for the location hash we pass into our login modal.
-                  // if we get redirected to the specified hash, it will close the window and
-                  // redirect the parent back to home.
+                  /**
+                  *  This method checks the current path.  We watch for the path we pass to the popup
+                  *  authorization window as a redirect url.   If the current url matches,  it closes the
+                  *  window, and redirects the parent window to the home page.
+                  */
                   if ($window.location.hash == '#/close-modal') {
                       $window.opener.location = '/';
                       $window.close();
                   };
 
-                  // Check user access token.
+                  /**
+                  *  Check user access token.
+                  */
                   $http.get('/auth/authenticated').then(function (res) {
                       $scope.isAuthenticated = res.data.authenticated;
                       if ($scope.isAuthenticated === false) {
@@ -144,16 +148,23 @@
                           return;
                       }
 
-                      // Access token is valid. Fetch constituent record.
+                      /**
+                      *  Access token is valid. Fetch constituent record.
+                      */
                       $http.get('/api/constituents/280').then(function (res) {
                           $scope.constituent = res.data;
                           $scope.isReady = true;
                       });
                   });
 
+                  /**
+                  *  Opens a new popup window, and directs it to our login route,  to achieve the correct
+                  *  redirect on success to close the popup window and redirect the parent, we pass in
+                  *  the ?redirect= as a paremeter and set it to the hash url we want to watch.
+                  */
                   $scope.popupLogin = function () {
                       var popup
-                      //  We pass in our redirect url to the login route as a param.
+
                       popup = window.open('auth/login?redirect=/%23/close-modal', 'login', 'height=450,width=600,');
                       if (window.focus) {
                           popup.focus();
