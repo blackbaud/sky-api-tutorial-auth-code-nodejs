@@ -7,6 +7,20 @@
     [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
       display: none !important;
     }
+
+    .login-options {
+        border: 1px solid #FFF;
+        padding: 20px 15px;
+        text-align: center;
+        background-color: #e2e0db;
+        border-radius: 5px;
+    }
+
+    .login-options-label {
+        display: block;
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
   </style>
 </head>
 
@@ -26,8 +40,24 @@
         LOGIN
         = This section is hidden if the session has NOT been authenticated.
       -->
-      <div ng-if="!isAuthenticated">
-        <a href="/auth/login" class="btn btn-primary">Log in</a>
+      <div ng-if="!isAuthenticated" class="col-sm-12">
+        <p>When dealing with Oauth we have two different routes we can go to handle authentication.   One is to redirect the current browser to the authentication site, and upon success we redirect back.   The second option is to open a secondary window from the first, and handle our authentication, close the window upon success and refresh the current page.</p>
+        <!--
+            LOGIN with redirect
+        -->
+        <div class="col-sm-5 login-options">
+          <span class="login-options-label">Login using redirect</span>
+          <a href="/auth/login" class="btn btn-primary btn-block btn-lg">Log in</a>
+        </div>
+
+        <!--
+            LOGIN with popup
+        -->
+        <div class="col-sm-5 col-sm-offset-2 login-options">
+            <span class="login-options-label">Login using popup</span>
+            <button ng-click="popupLogin()" class="btn btn-primary btn-block btn-lg" target="login-iframe">Log in</button>
+        </div>
+
       </div>
 
 
@@ -96,7 +126,15 @@
           'use strict';
 
           angular.module('AuthCodeFlowTutorial', [])
-              .controller('ConstituentCtrl', function ($scope, $http) {
+              .controller('ConstituentCtrl', function ($scope, $http, $window) {
+
+                  // Keeps an eye out for the location hash we pass into our login modal.
+                  // if we get redirected to the specified hash, it will close the window and
+                  // redirect the parent back to home.
+                  if ($window.location.hash == '#/close-modal') {
+                      $window.opener.location = '/';
+                      $window.close();
+                  };
 
                   // Check user access token.
                   $http.get('/auth/authenticated').then(function (res) {
@@ -112,6 +150,15 @@
                           $scope.isReady = true;
                       });
                   });
+
+                  $scope.popupLogin = function () {
+                      var popup
+                      //  We pass in our redirect url to the login route as a param.
+                      popup = window.open('auth/login?redirect=/%23/close-modal', 'login', 'height=450,width=600,');
+                      if (window.focus) {
+                          popup.focus();
+                      }
+                  }
               });
       })(window.angular);
   </script>
