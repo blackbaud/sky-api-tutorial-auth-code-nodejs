@@ -8,17 +8,23 @@
         display: none !important;
       }
 
-      .login-options {
-          border: 1px solid #FFF;
-          padding: 20px 15px;
-          text-align: center;
-          background-color: #e2e0db;
-          border-radius: 5px;
+      h1, h3 {
+        text-align: center;
       }
-
+      p {
+        line-height: 1.5;
+      }
+      .paragraph-text {
+          margin-bottom: 30px;
+      }
+      .login-options {
+          background-color: white;
+          box-shadow: 0 1px 1px rgba(0,0,0,.25);
+      }
       .login-options-label {
           display: block;
           font-size: 20px;
+          text-align: center;
           margin-bottom: 15px;
       }
   </style>
@@ -38,15 +44,19 @@
         LOGIN
         = This section is hidden if the session has NOT been authenticated.
       -->
-      <div ng-if="!isAuthenticated" class="col-sm-12">
-        <p>When dealing with Oauth we have two different routes we can go to handle authentication.   One is to redirect the current browser to the authentication site, and upon success we redirect back.   The second option is to open a secondary window from the first, and handle our authentication, close the window upon success and refresh the current page.</p>
+      <div ng-if="!isAuthenticated" class="col-sm-12 well">
+        <h3>There are two options for dealing with Authroization/Authentication.</h3>
+        <div class="paragraph-text">
+            <p>The first is a full browser redirect.   The User is taken to the bbauth site, and asked to login and authroize access before being redirected back to the main page.</p>
+            <p>The second option is to open a popup window.  This window will be directed to the bbauth site, where the user will be asked to login and authorize access before the window is closed and the main window is redirected back to the main page.</p>
+        </div>
 
         <!--
             LOGIN with redirect
                 this option redirects the entire page to the bbauth site.   The user can then authorize the content,
                 and on success will be redirected back to the main page.
         -->
-        <div class="col-sm-5 login-options">
+        <div class="col-sm-5 well login-options">
           <span class="login-options-label">Login using redirect</span>
           <a href="/auth/login" class="btn btn-primary btn-block btn-lg">Log in</a>
         </div>
@@ -56,7 +66,7 @@
                 this option pops open a new window to the bbauth site.   The user can then authorize the content,
                 and on success, the new window will close, and the parent window will redirect to the main page.
         -->
-        <div class="col-sm-5 col-sm-offset-2 login-options">
+        <div class="col-sm-5 col-sm-offset-2 well login-options">
             <span class="login-options-label">Login using popup</span>
             <button ng-click="popupLogin()" class="btn btn-primary btn-block btn-lg" target="login-iframe">Log in</button>
         </div>
