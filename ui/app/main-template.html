@@ -1,0 +1,88 @@
+<div class="container" ng-cloak>
+  <h1>Blackbaud SKY API Authorization Code Flow Tutorial</h1>
+  <div class="content" ng-show="isReady">
+
+    <!--
+      LOGIN
+      = This section is hidden if the session has NOT been authenticated.
+    -->
+    <div ng-if="!isAuthenticated" class="col-sm-12 well">
+      <h3>There are two options for dealing with Authroization/Authentication.</h3>
+      <div class="paragraph-text">
+          <p>The first is a full browser redirect.   The User is taken to the bbauth site, and asked to login and authroize access before being redirected back to the main page.</p>
+          <p>The second option is to open a popup window.  This window will be directed to the bbauth site, where the user will be asked to login and authorize access before the window is closed and the main window is redirected back to the main page.</p>
+      </div>
+
+      <!--
+          LOGIN with redirect
+              this option redirects the entire page to the bbauth site.   The user can then authorize the content,
+              and on success will be redirected back to the main page.
+      -->
+      <div class="col-sm-5 well login-options">
+        <span class="login-options-label">Login using redirect</span>
+        <a href="/auth/login" class="btn btn-primary btn-block btn-lg">Log in</a>
+      </div>
+
+      <!--
+          LOGIN with popup
+              this option pops open a new window to the bbauth site.   The user can then authorize the content,
+              and on success, the new window will close, and the parent window will redirect to the main page.
+      -->
+      <div class="col-sm-5 col-sm-offset-2 well login-options">
+          <span class="login-options-label">Login using popup</span>
+          <button ng-click="popupLogin()" class="btn btn-primary btn-block btn-lg" target="login-iframe">Log in</button>
+      </div>
+
+    </div>
+
+    <!--
+      CONSTITUENT DATA
+      = This section is only visible when the session has been authenticated and
+      = appropriate constituent data has been returned.
+      = AngularJS uses a templating engine similar to HandlebarsJS to output model data.
+    -->
+    <div ng-if="isAuthenticated">
+      <div class="well">
+        <h3>Constituent: {{ constituent.name }}</h3>
+        <p>
+          See <a href="https://developer.sky.blackbaud.com/constituent-entity-reference#Constituent" target="_blank">Constituent</a>
+          within the Blackbaud SKY API contact reference for a full listing of properties.
+        </p>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>id</td>
+              <td>{{ constituent.id }}</td>
+            </tr>
+            <tr>
+              <td>type</td>
+              <td>{{ constituent.type }}</td>
+            </tr>
+            <tr>
+              <td>lookup_id</td>
+              <td>{{ constituent.lookup_id }}</td>
+            </tr>
+            <tr>
+              <td>first</td>
+              <td>{{ constituent.first }}</td>
+            </tr>
+            <tr>
+              <td>last</td>
+              <td>{{ constituent.last }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="/auth/logout" class="btn btn-primary">Log out</a>
+    </div>
+  </div>
+  <div class="lead" ng-hide="isReady">Loading...</div>
+</div>
