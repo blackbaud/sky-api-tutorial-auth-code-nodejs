@@ -2,55 +2,31 @@
 <html>
 <head>
   <title>SKY API Auth Code Flow Tutorial</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <style>
-      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-        display: none !important;
-      }
-
-      h1, h3 {
-        text-align: center;
-      }
-      p {
-        line-height: 1.5;
-      }
-      .paragraph-text {
-          margin-bottom: 30px;
-      }
-      .login-options {
-          background-color: white;
-          box-shadow: 0 1px 1px rgba(0,0,0,.25);
-      }
-      .login-options-label {
-          display: block;
-          font-size: 20px;
-          text-align: center;
-          margin-bottom: 15px;
-      }
-  </style>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/app/styles.css">
 </head>
 
 <!--
   INITIALIZE THE APP
-  = [ng-app] The name of the AngularJS application to use.
-  = [ng-controller] The name of the AngularJS controller function, which handles the model data.
+    [ng-app] The name of the AngularJS application to use.
 -->
 <body ng-app="AuthCodeFlowTutorial">
 
   <!--
-    = [ng-view] This is where our view from the angular router will load.
+    [ng-view] This is where our view from the angular router will load.
   -->
   <ng-view></ng-view>
 
   <!--
     LIBRARIES/FRAMEWORKS
-    = Data is retrieved from Sky API via an AngularJS application.
+      Data is retrieved from Sky API via an AngularJS application.
   -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.js"></script>
   <!--
     SCRIPTS
-    = Local Javascript files for initializing angular and our app logic.
+      Local Javascript files for initializing angular and our app logic.
   -->
   <script src="./app/main.js"></script>
 </body>
