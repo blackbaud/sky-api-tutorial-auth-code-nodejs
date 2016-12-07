@@ -1,0 +1,12 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+.well-title {
+  margin: 0 0 20px;
+}
+.well .panel {
+  margin: 0;
+}
+.panel p:last-child {
+  margin: 0;
+}
