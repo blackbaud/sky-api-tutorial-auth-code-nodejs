@@ -40,7 +40,7 @@
      * @param {Function} callback
      */
     function getConstituentSearch(request, name, callback) {
-        get(request, 'constituents/search?searchText=' + name, callback);
+        get(request, 'constituents/search?search_text=' + name, callback);
     }
 
 
