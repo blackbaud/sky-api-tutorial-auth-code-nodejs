@@ -14,4 +14,4 @@ Feel free to leave feedback by filing an [issue](https://github.com/blackbaud/sk
 
 ## Run this app on your server
 
-To run this application in your environment, follow the instructions found within our  [Auth Code Flow Tutorial](https://apidocs.sky.blackbaud.com/docs/code/auth-code-flow/nodejs/) within our documentation. 
+To run this application in your environment, follow the instructions found within our  [Auth Code Flow Tutorial](https://developer.blackbaud.com/skyapi/docs/code/auth-flows/auth-code-flow/nodejs) within our documentation. 
