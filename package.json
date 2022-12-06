@@ -18,10 +18,11 @@
     "express-session": "^1.11.3",
     "request": "^2.64.0",
     "request-promise": "^3.0.0",
-    "simple-oauth2": "^0.2.1"
+    "simple-oauth2": "^5.0.0"
   },
   "engines": {
-    "node": "0.12.7"
+    "npm": ">=6.0.0",
+    "node": ">=14.0.0"
   },
   "repository": {
     "type": "git",
