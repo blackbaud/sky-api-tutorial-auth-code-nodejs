@@ -166,8 +166,7 @@
      * @param {Object} response
      */
     async function getLogout(request, response) {
-        var redirect,
-            accessToken;
+        var redirect;
 
         redirect = request.session.redirect || '/';
 
