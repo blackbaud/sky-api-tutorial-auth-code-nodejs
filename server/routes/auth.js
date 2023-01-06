@@ -19,9 +19,6 @@
             tokenHost: 'https://oauth2.sky.blackbaud.com',
             authorizePath: '/authorization',
             tokenPath: '/token'
-        },
-        options: {
-            authorizationMethod: 'body'
         }
     };
 
@@ -174,22 +171,8 @@
 
         redirect = request.session.redirect || '/';
 
-        function go() {
-            request.session.destroy();
-            response.redirect(redirect);
-        }
-
-        if (!request.session.ticket) {
-            go();
-        } else {
-            try {
-                accessToken = authCodeClient.createToken(request.session.ticket);
-                await accessToken.revokeAll({json: true});
-                go();
-            } catch (error) {
-                console.log('Error revoking token: ', error.message);
-            }
-        }
+        request.session.destroy();
+        response.redirect(redirect);
     }
 
 
