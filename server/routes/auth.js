@@ -3,17 +3,26 @@
     'use strict';
 
     var crypto,
-        oauth2;
+        authCodeClient,
+        config;
 
     crypto = require('crypto');
-    oauth2 = require('simple-oauth2')({
-        clientID: process.env.AUTH_CLIENT_ID,
-        clientSecret: process.env.AUTH_CLIENT_SECRET,
-        authorizationPath: '/authorization',
-        site: 'https://oauth2.sky.blackbaud.com',
-        tokenPath: '/token'
-    });
 
+    var { AuthorizationCode } = require('simple-oauth2');
+
+    config = {
+        client: {
+            id: process.env.AUTH_CLIENT_ID,
+            secret: process.env.AUTH_CLIENT_SECRET
+        },
+        auth: {
+            tokenHost: 'https://oauth2.sky.blackbaud.com',
+            authorizePath: '/authorization',
+            tokenPath: '/token'
+        }
+    };
+
+    authCodeClient = new AuthorizationCode(config);
 
     /**
      * Validates all requests.
@@ -57,15 +66,17 @@
     /**
      * Handles oauth response.
      * Validates the code and state querystring params.
+     * Validates the PKCE code_verifier exists
      * Exchanges code for an access token and redirects user back to app home.
      * @name getCallback
      * @param {Object} request
      * @param {Object} response
      */
-    function getCallback(request, response) {
+    async function getCallback(request, response) {
         var error,
             options,
-            redirect;
+            redirect,
+            accessToken;
 
         if (request.query.error) {
             error = request.query.error;
@@ -75,26 +86,30 @@
             error = 'auth_missing_state';
         } else if (request.session.state !== request.query.state) {
             error = 'auth_invalid_state';
+        } else if (!request.session.code_verifier) {
+            error  = 'auth_missing_code_verifier';
         }
 
         if (!error) {
             options = {
                 code: request.query.code,
-                redirect_uri: process.env.AUTH_REDIRECT_URI
+                redirect_uri: process.env.AUTH_REDIRECT_URI,
+                code_verifier: request.session.code_verifier
             };
-            oauth2.authCode.getToken(options, function (errorToken, ticket) {
-                if (errorToken) {
-                    error = errorToken.message;
-                } else {
-                    redirect = request.session.redirect || '/';
+            try {
+                accessToken = await authCodeClient.getToken(options);
 
-                    request.session.redirect = '';
-                    request.session.state = '';
+                redirect = request.session.redirect || '/';
 
-                    saveTicket(request, ticket);
-                    response.redirect(redirect);
-                }
-            });
+                request.session.redirect = '';
+                request.session.state = '';
+                request.session.code_verifier = undefined;
+
+                saveTicket(request, accessToken.token);
+                response.redirect(redirect);
+            } catch (errorToken) {
+                error = errorToken.message;
+            }
         }
 
         if (error) {
@@ -111,12 +126,34 @@
      * @param {Object} response
      */
     function getLogin(request, response) {
-        console.log("getLogin called");
+        var codeVerifier,
+            codeChallenge,
+            challengeDigest;
+
+        function base64URLEncode(str) {
+            return str.toString('base64')
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+        }
+
         request.session.redirect = request.query.redirect;
         request.session.state = crypto.randomBytes(48).toString('hex');
-        response.redirect(oauth2.authCode.authorizeURL({
+
+        codeVerifier = base64URLEncode(crypto.randomBytes(32));
+        challengeDigest = crypto
+            .createHash("sha256")
+            .update(codeVerifier)
+            .digest();
+
+        codeChallenge = base64URLEncode(challengeDigest);
+        request.session.code_verifier = codeVerifier;
+
+        response.redirect(authCodeClient.authorizeURL({
             redirect_uri: process.env.AUTH_REDIRECT_URI,
-            state: request.session.state
+            state: request.session.state,
+            code_challenge: codeChallenge,
+            code_challenge_method: 'S256'
         }));
     }
 
@@ -128,25 +165,13 @@
      * @param {Object} request
      * @param {Object} response
      */
-    function getLogout(request, response) {
-        var redirect,
-            token;
+    async function getLogout(request, response) {
+        var redirect;
 
         redirect = request.session.redirect || '/';
 
-        function go() {
-            request.session.destroy();
-            response.redirect(redirect);
-        }
-
-        if (!request.session.ticket) {
-            go();
-        } else {
-            token = oauth2.accessToken.create(request.session.ticket);
-            token.revoke('access_token', function () {
-                token.revoke('refresh_token', go);
-            });
-        }
+        request.session.destroy();
+        response.redirect(redirect);
     }
 
 
@@ -169,10 +194,10 @@
      * @param {Object} request
      * @param {Object} response
      */
-    function validate(request, callback) {
+    async function validate(request, callback) {
         var dtCurrent,
             dtExpires,
-            token;
+            accessToken;
 
         if (request.session && request.session.ticket && request.session.expires) {
 
@@ -183,11 +208,16 @@
                 console.log('Token expired');
 
                 // Check if the token is expired. If expired it is refreshed.
-                token = oauth2.accessToken.create(request.session.ticket);
-                token.refresh(function (error, ticket) {
-                    saveTicket(request, ticket.token);
-                    return callback(!error);
-                });
+                accessToken = authCodeClient.createToken(request.session.ticket);
+
+                try {
+                    accessToken = await accessToken.refresh();
+                
+                    saveTicket(request, accessToken.token);
+                    callback(true);
+                } catch (_) {
+                    callback(false);
+                }
             } else {
                 callback(true);
             }
