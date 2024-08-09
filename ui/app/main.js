@@ -1,8 +1,6 @@
-// main.js
 document.addEventListener("DOMContentLoaded", function () {
     const app = document.getElementById("app");
 
-    // Initialize the app
     function initApp() {
         // Check if the user is authenticated
         fetch('/auth/authenticated')
@@ -17,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             renderConstituentData(constituent);
                         });
                 } else {
-                    // User is not authenticated, render login options
                     renderLoginOptions();
                 }
             });
@@ -67,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Render constituent data
     function renderConstituentData(constituent) {
         const constituentData = `
+        <h1>SKY API Authorization Code Flow Tutorial</h1>
           <div class="well">
             <h3 class="well-title">Constituent: ${constituent.name}</h3>
             <p>
@@ -111,6 +109,5 @@ document.addEventListener("DOMContentLoaded", function () {
         app.innerHTML = constituentData;
     }
 
-    // Initialize the app
     initApp();
 });
