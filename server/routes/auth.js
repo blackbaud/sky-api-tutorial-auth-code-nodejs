@@ -19,6 +19,9 @@
             tokenHost: 'https://oauth2.sky.blackbaud.com',
             authorizePath: '/authorization',
             tokenPath: '/token'
+        },
+        options: {
+            credentialsEncodingMode: 'loose'
         }
     };
 
