@@ -58,6 +58,24 @@ document.addEventListener("DOMContentLoaded", function () {
             if (window.focus) {
                 popup.focus();
             }
+
+            let intervalId = setInterval(function () {
+                fetch('/auth/authenticated')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.authenticated) {
+                            clearInterval(intervalId);
+                            popup.close();
+                            // User is authenticated, fetch constituent data
+                            fetch('/api/constituents/280')
+                                .then(response => response.json())
+                                .then(data => {
+                                    const constituent = data;
+                                    renderConstituentData(constituent);
+                                });
+                        }
+                    });
+            }, 200);
         });
     }
 
