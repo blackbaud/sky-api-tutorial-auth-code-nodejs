@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const app = document.getElementById("app");
+    let popup = null;
+    let intervalId = null;
 
     function initApp() {
         // Check if the user is authenticated
@@ -54,18 +56,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Add event listener to popup login button
         document.getElementById("popup-login").addEventListener("click", function () {
-            const popup = window.open('auth/login?redirect=/%23/auth-success', 'login', 'height=450,width=600');
+            if (popup && !popup.closed) {
+                popup.focus();
+                return;
+            }
+
+            popup = window.open('auth/login?redirect=/%23/auth-success', 'login', 'height=450,width=600');
             if (window.focus) {
                 popup.focus();
             }
 
-            let intervalId = setInterval(function () {
+            intervalId = setInterval(function () {
+                if (popup && popup.closed) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    popup = null;
+                    return;
+                }
+
                 fetch('/auth/authenticated')
                     .then(response => response.json())
                     .then(data => {
                         if (data.authenticated) {
                             clearInterval(intervalId);
+                            intervalId = null;
                             popup.close();
+                            popup = null;
                             // User is authenticated, fetch constituent data
                             fetch('/api/constituents/280')
                                 .then(response => response.json())
@@ -75,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 });
                         }
                     });
-            }, 200);
+            }, 500);
         });
     }
 
@@ -86,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="well">
             <h3 class="well-title">Constituent: ${constituent.name}</h3>
             <p>
-              See <a href="https://developer.blackbaud.com/skyapi/apis/constituent" target="_blank">Constituent</a>
+              See <a href="https://developer.blackbaud.com/skyapi/products/renxt/constituent" target="_blank">Constituent</a>
               within the Blackbaud SKY API contact reference for a full listing of properties.
             </p>
           </div>
