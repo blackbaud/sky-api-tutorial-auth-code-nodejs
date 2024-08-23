@@ -61,32 +61,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            // Open a new popup window for login
             popup = window.open('auth/login?redirect=/%23/auth-success', 'login', 'height=450,width=600');
+
+            // Focus the popup window if possible
             if (window.focus) {
                 popup.focus();
             }
 
+            // Set an interval to check every 500ms if the user has authenticated
             intervalId = setInterval(function () {
+                // Check if the popup window is still open
                 if (popup && popup.closed) {
+                    // If the popup is closed, clear the interval and reset variables
                     clearInterval(intervalId);
                     intervalId = null;
                     popup = null;
                     return;
                 }
 
+                // Check if the user is authenticated by making a request to /auth/authenticated
                 fetch('/auth/authenticated')
                     .then(response => response.json())
                     .then(data => {
+                        // If the user is authenticated, clear the interval and close the popup
                         if (data.authenticated) {
                             clearInterval(intervalId);
                             intervalId = null;
                             popup.close();
                             popup = null;
-                            // User is authenticated, fetch constituent data
+
+                            // Fetch constituent data now that the user is authenticated
                             fetch('/api/constituents/280')
                                 .then(response => response.json())
                                 .then(data => {
                                     const constituent = data;
+                                    // Render the constituent data
                                     renderConstituentData(constituent);
                                 });
                         }
