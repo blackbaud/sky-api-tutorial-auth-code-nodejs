@@ -1,33 +1,19 @@
 <!doctype html>
 <html>
 <head>
-  <title>SKY API Auth Code Flow Tutorial</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/app/styles.css">
+    <title>SKY API Auth Code Flow Tutorial</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/app/styles.css">
 </head>
+<body>
 
-<!--
-  INITIALIZE THE APP
-    [ng-app] The name of the AngularJS application to use.
--->
-<body ng-app="AuthCodeFlowTutorial">
+    <div class="container">
+        <div id="app">
 
-  <!--
-    [ng-view] This is where our view from the angular router will load.
-  -->
-  <ng-view></ng-view>
+        </div>
+    </div>
 
-  <!--
-    LIBRARIES/FRAMEWORKS
-      Data is retrieved from Sky API via an AngularJS application.
-  -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.js"></script>
-  <!--
-    SCRIPTS
-      Local Javascript files for initializing angular and our app logic.
-  -->
-  <script src="./app/main.js"></script>
+    <script src="/app/main.js"></script>
 </body>
 </html>

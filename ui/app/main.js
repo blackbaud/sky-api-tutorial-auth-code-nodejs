@@ -1,82 +1,157 @@
-(function (angular) {
-    'use strict';
+document.addEventListener("DOMContentLoaded", function () {
+    const app = document.getElementById("app");
+    let popup = null;
+    let intervalId = null;
 
-    angular.module('AuthCodeFlowTutorial', ['ngRoute'])
-        .config(function ($routeProvider) {
+    function initApp() {
+        // Check if the user is authenticated
+        fetch('/auth/authenticated')
+            .then(response => response.json())
+            .then(data => {
+                if (data.authenticated) {
+                    // User is authenticated, fetch constituent data
+                    fetch('/api/constituents/280')
+                        .then(response => response.json())
+                        .then(data => {
+                            const constituent = data;
+                            renderConstituentData(constituent);
+                        });
+                } else {
+                    renderLoginOptions();
+                }
+            });
+    }
 
-            /**
-             *  Defines our app's routes.
-             *  For this example we will only be using two: a `#/home`
-             *  and a `#/auth-success` route. We define which controllers and
-             *  templates each route will use.
-             */
-            $routeProvider
-                .when('/home', {
-                    templateUrl: './app/main-template.html',
-                    controller: 'AppController'
-                })
-                .when('/auth-success', {
-                    template: '<h1>Login Successful</h1>',
-                    controller: 'AuthController'
-                })
-                .otherwise({
-                    redirectTo: '/home'
-                });
-        })
+    // Render login options
+    function renderLoginOptions() {
+        const loginOptions = `
+          <h1>SKY API Authorization Code Flow Tutorial</h1>
+          <div class="well">
+            <h4 class="well-title">Applications implementing the authorization code flow may be authorized in one of two ways:</h4>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="panel panel-default panel-body">
+                  <p>
+                    <a href="/auth/login" class="btn btn-primary btn-block btn-lg"><i class="fa fa-external-link"></i> Authorize using redirect</a>
+                  </p>
+                  <p>
+                    The user authorizes the application after being redirected to the Blackbaud Authorization website.
+                  </p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="panel panel-default panel-body">
+                  <p>
+                    <button id="popup-login" class="btn btn-primary btn-block btn-lg" target="login-iframe"><i class="fa fa-window-restore"></i> Authorize using popup</button>
+                  </p>
+                  <p>
+                    The user authorizes the application using a browser popup window.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        app.innerHTML = loginOptions;
 
-        /**
-         * This controller is for handling our post-success authentication.
-         */
-        .controller('AuthController', function ($window) {
+        // Add event listener to popup login button
+        document.getElementById("popup-login").addEventListener("click", function () {
+            if (popup && !popup.closed) {
+                popup.focus();
+                return;
+            }
 
-            /**
-             * When we arrive at this view, the popup window is closed, and we redirect the main
-             * window to our desired route; in this case, '/'.
-             *   - This is also a great place for doing any post-login logic you want to implement
-             *     before we redirect.
-             */
-            $window.opener.location = '/';
-            $window.close();
-        })
+            // Open a new popup window for login
+            popup = window.open('auth/login?redirect=/%23/auth-success', 'login', 'height=450,width=600');
 
-        /**
-         * General controller for handling the majority of our routes.  As our app grows, we would use more
-         * controllers for each route.
-         */
-        .controller('AppController', function ($scope, $http, $window) {
+            // Focus the popup window if possible
+            if (window.focus) {
+                popup.focus();
+            }
 
-            /**
-             *  Checks the user access token.
-             */
-            $http.get('/auth/authenticated').then(function (res) {
-                $scope.isAuthenticated = res.data.authenticated;
-                if ($scope.isAuthenticated === false) {
-                    $scope.isReady = true;
+            // Set an interval to check every 500ms if the user has authenticated
+            intervalId = setInterval(function () {
+                // Check if the popup window is still open
+                if (popup && popup.closed) {
+                    // If the popup is closed, clear the interval and reset variables
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    popup = null;
                     return;
                 }
 
-                /**
-                 *  Access token is valid. Fetch constituent record.
-                 */
-                $http.get('/api/constituents/280').then(function (res) {
-                    $scope.constituent = res.data;
-                    $scope.isReady = true;
-                });
-            });
+                // Check if the user is authenticated by making a request to /auth/authenticated
+                fetch('/auth/authenticated')
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the user is authenticated, clear the interval and close the popup
+                        if (data.authenticated) {
+                            clearInterval(intervalId);
+                            intervalId = null;
+                            popup.close();
+                            popup = null;
 
-            /**
-             * Opens a new popup window and redirects it to our login route.
-             * After a successful login within the popup, the popup is redirected to the `#/auth-success`
-             * route, which closes the popup window and returns focus to the parent window.
-             */
-            $scope.popupLogin = function () {
-                var popup;
-
-                popup = $window.open('auth/login?redirect=/%23/auth-success', 'login', 'height=450,width=600');
-
-                if ($window.focus) {
-                    popup.focus();
-                }
-            };
+                            // Fetch constituent data now that the user is authenticated
+                            fetch('/api/constituents/280')
+                                .then(response => response.json())
+                                .then(data => {
+                                    const constituent = data;
+                                    // Render the constituent data
+                                    renderConstituentData(constituent);
+                                });
+                        }
+                    });
+            }, 500);
         });
-})(window.angular);
+    }
+
+    // Render constituent data
+    function renderConstituentData(constituent) {
+        const constituentData = `
+        <h1>SKY API Authorization Code Flow Tutorial</h1>
+          <div class="well">
+            <h3 class="well-title">Constituent: ${constituent.name}</h3>
+            <p>
+              See <a href="https://developer.blackbaud.com/skyapi/products/renxt/constituent" target="_blank">Constituent</a>
+              within the Blackbaud SKY API contact reference for a full listing of properties.
+            </p>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>id</td>
+                  <td>${constituent.id}</td>
+                </tr>
+                <tr>
+                  <td>type</td>
+                  <td>${constituent.type}</td>
+                </tr>
+                <tr>
+                  <td>lookup_id</td>
+                  <td>${constituent.lookup_id}</td>
+                </tr>
+                <tr>
+                  <td>first</td>
+                  <td>${constituent.first}</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>${constituent.last}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <a href="/auth/logout" class="btn btn-primary">Log out</a>
+        `;
+        app.innerHTML = constituentData;
+    }
+
+    initApp();
+});
