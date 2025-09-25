@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <title>Authentication Successful</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="alert alert-success" role="alert">
+            <h4>Authentication Successful!</h4>
+            <p>You can close this window.</p>
+        </div>
+    </div>
+
+    <script>
+        // Notify the parent window that authentication was successful
+        if (window.opener) {
+            window.opener.postMessage('auth-success', '*');
+            window.close();
+        }
+    </script>
+</body>
+</html>

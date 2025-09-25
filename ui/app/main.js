@@ -19,7 +19,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     renderLoginOptions();
                 }
+            })
+            .catch(error => {
+                console.error('Error checking authentication:', error);
+                renderError('Failed to check authentication status');
             });
+    }
+
+    // Handle messages from popup window
+    window.addEventListener('message', function(event) {
+        if (event.data === 'auth-success') {
+            // Authentication successful, clean up popup and reload app
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            if (popup && !popup.closed) {
+                popup.close();
+            }
+            popup = null;
+            
+            // Re-initialize the app to check authentication and load data
+            initApp();
+        }
+    });
+
+    // Render error message
+    function renderError(message) {
+        const errorHtml = `
+            <h1>SKY API Authorization Code Flow Tutorial</h1>
+            <div class="alert alert-danger" role="alert">
+                <h4>Error</h4>
+                <p>${message}</p>
+                <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
+            </div>
+        `;
+        app.innerHTML = errorHtml;
     }
 
     // Render login options
@@ -62,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Open a new popup window for login
-            popup = window.open('auth/login?redirect=/%23/auth-success', 'login', 'height=450,width=600');
+            popup = window.open('auth/login?redirect=/auth-success.html', 'login', 'height=450,width=600');
 
             // Focus the popup window if possible
             if (window.focus) {
@@ -88,7 +123,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (data.authenticated) {
                             clearInterval(intervalId);
                             intervalId = null;
-                            popup.close();
+                            if (popup && !popup.closed) {
+                                popup.close();
+                            }
                             popup = null;
 
                             // Fetch constituent data now that the user is authenticated
@@ -98,8 +135,15 @@ document.addEventListener("DOMContentLoaded", function () {
                                     const constituent = data;
                                     // Render the constituent data
                                     renderConstituentData(constituent);
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching constituent data:', error);
+                                    renderError('Failed to fetch constituent data after authentication');
                                 });
                         }
+                    })
+                    .catch(error => {
+                        console.error('Error checking authentication status:', error);
                     });
             }, 500);
         });
